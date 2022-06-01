@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include <stdlib.h>
 
-#define COUNTO 10000000
+#define COUNTO 40000000
 
 counter_t COUNTER; // global counter.
 

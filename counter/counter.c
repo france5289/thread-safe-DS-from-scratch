@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include <stdlib.h>
 
-#define COUNTO 1000000
+#define COUNTO 10000000
 
 counter_t COUNTER; // global counter.
 
@@ -53,6 +53,14 @@ void* worker(void* arg)
 
 int main(int argc, char const *argv[])
 {
+    // init counter.
+    init(&COUNTER);
+
+    // init timer.
+    struct timeval start;
+    struct timeval end;
+    unsigned long diff;
+
     // get num of threads
     int num_threads = 0;
     if (argc != 2)
@@ -66,7 +74,10 @@ int main(int argc, char const *argv[])
     threads_array = (pthread_t*)malloc(num_threads*sizeof(pthread_t));
     int target = COUNTO / num_threads;
 
+
     // create threads.
+    // start timer.
+    gettimeofday(&start, NULL);
     for (size_t i = 0; i < num_threads; i++)
     {
         Pthread_create(&threads_array[i], NULL, worker, &target);
@@ -78,8 +89,13 @@ int main(int argc, char const *argv[])
         Pthread_join(threads_array[i], NULL);
     }
 
+    // stop timer.
+    gettimeofday(&end, NULL);
     // main thread get counter value and print it.
     printf("Counter value: %d\n", get(&COUNTER));
+    // print approximate running time.
+    diff = 1000000*(end.tv_sec-start.tv_sec) + (end.tv_usec-start.tv_usec);
+    printf("Time elapsed: %ld ms\n", diff);
 
     // free thread array.
     free(threads_array);

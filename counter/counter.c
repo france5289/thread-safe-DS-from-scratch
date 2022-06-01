@@ -7,13 +7,13 @@
 
 counter_t COUNTER; // global counter.
 
-void init(counter_t* c)
+void init(counter_t *c)
 {
     c->value = 0;
     Pthread_mutex_init(&c->lock, NULL);
 }
 
-void update(counter_t* c, int amount)
+void update(counter_t *c, int amount)
 {
     // acquire lock first.
     Pthread_mutex_lock(&c->lock);
@@ -23,7 +23,7 @@ void update(counter_t* c, int amount)
     Pthread_mutex_unlock(&c->lock);
 }
 
-int get(counter_t* c)
+int get(counter_t *c)
 {
     // acquire lock first.
     Pthread_mutex_lock(&c->lock);
@@ -35,13 +35,13 @@ int get(counter_t* c)
 }
 /**
  * @brief Our worker rountine, pass in a target value to accumulate counter to that value.
- * 
+ *
  * @param arg target value.
  * @return void* no return.
  */
-void* worker(void* arg)
+void *worker(void *arg)
 {
-    int target = *((int*) arg);
+    int target = *((int *)arg);
     // incremet counter by one.
     for (size_t i = 0; i < target; i++)
     {
@@ -49,7 +49,6 @@ void* worker(void* arg)
     }
     return NULL;
 }
-
 
 int main(int argc, char const *argv[])
 {
@@ -70,10 +69,9 @@ int main(int argc, char const *argv[])
         return 1;
     }
     num_threads = atoi(argv[1]);
-    pthread_t* threads_array = NULL;
-    threads_array = (pthread_t*)malloc(num_threads*sizeof(pthread_t));
+    pthread_t *threads_array = NULL;
+    threads_array = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
     int target = COUNTO / num_threads;
-
 
     // create threads.
     // start timer.
@@ -94,7 +92,7 @@ int main(int argc, char const *argv[])
     // main thread get counter value and print it.
     printf("Counter value: %d\n", get(&COUNTER));
     // print approximate running time.
-    diff = 1000000*(end.tv_sec-start.tv_sec) + (end.tv_usec-start.tv_usec);
+    diff = 1000000 * (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec);
     printf("Time elapsed: %ld ms\n", diff);
 
     // free thread array.
